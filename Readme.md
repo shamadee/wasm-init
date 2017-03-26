@@ -1,0 +1,1 @@
+#Template code for WebAssemby projects

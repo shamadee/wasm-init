@@ -1,7 +1,7 @@
 {
-  "name": "wasm-test",
-  "version": "1.0.0",
+  "name": "wasm-init",
   "description": "",
+  "version": "0.0.1",
   "main": "index.js",
   "scripts": {
     "start": "node index.js && node server.js",
@@ -9,11 +9,15 @@
   },
   "author": "shamadee",
   "license": "MIT",
+  "keywords": [
+    "webassembly",
+    "web",
+    "wasm"
+  ],
   "dependencies": {
     "colors": "^1.1.2",
     "express": "^4.15.2",
     "fs": "0.0.1-security",
-    "path": "^0.12.7",
-    "systemjs-plugin-wasm": "^1.0.1-beta"
+    "path": "^0.12.7"
   }
 }

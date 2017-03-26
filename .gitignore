@@ -6,3 +6,4 @@ index.html
 app.js
 server.js
 wasm.config.js
+.DS_Store

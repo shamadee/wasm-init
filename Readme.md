@@ -1,1 +1,1 @@
-#Template code for WebAssemby projects
+Template code for WebAssemby projects

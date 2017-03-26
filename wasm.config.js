@@ -1,5 +1,6 @@
 // wasm.config.js
-const wasmConfig = {
+module.exports = {
+  emscripten_path: './../emsdk',
   inputfiles: [
     './cpp/lib.cpp',
   ],
@@ -8,13 +9,10 @@ const wasmConfig = {
   ],
   exported_functions: [
     '_myFunc',
+    '_myFunc2',
   ],
   flags: [
     '-s WASM=1',
   ],
-};
-
-module.exports = {
-  wasmConfig,
 };
 

@@ -2,11 +2,6 @@
   "name": "wasm-init",
   "description": "",
   "version": "0.0.1",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js && node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "shamadee",
   "license": "MIT",
   "keywords": [
@@ -14,10 +9,19 @@
     "web",
     "wasm"
   ],
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/shamadee/wasm-init.git"
+  },
   "dependencies": {
     "colors": "^1.1.2",
     "express": "^4.15.2",
     "fs": "0.0.1-security",
     "path": "^0.12.7"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

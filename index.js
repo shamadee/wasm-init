@@ -19,10 +19,14 @@ create.writeFile('app.js', './', templates.appJsTxt, 'app.js file');
 const config = require('./wasm.config.js');
 
 function compileWASM () {
-  console.log(config.exported_functions);
-  let exp_funcs = config.exported_functions.reduce((acc, val) => acc.concat('\'', val, '\'\,'), '[');
-  exp_funcs = exp_funcs.substring(0, exp_funcs.length - 1).concat(']');
-  console.log('hi: ', exp_funcs);
+  // format exported functions from config for shell script
+  let expFuncs = config.exported_functions.reduce((acc, val) => acc.concat('\'', val, '\'\,'), '[');
+  expFuncs = expFuncs.substring(0, expFuncs.length - 1).concat(']');
+
+  // format flags from config for shell script
+  const flags = config.flags.reduce((acc, val) => acc.concat(' ', val), '');
+
+  // execute shell script
   exec(`
   if [[ :$PATH: != *:"/emsdk":* ]]
   then
@@ -39,10 +43,9 @@ function compileWASM () {
 
   echo "Compiling C++ to WASM ..."
   echo " "
-  emcc -o ${config.outputfiles} ${config.inputfiles} -lm -O3 -s WASM=1 \
-  -s EXPORTED_FUNCTIONS="${exp_funcs}" \
-  -s ALLOW_MEMORY_GROWTH=1 \
-  -s ASSERTIONS=1 \
+  emcc -o ${config.outputfiles} ${config.inputfiles} \
+  -s EXPORTED_FUNCTIONS="${expFuncs}" \
+  ${flags}
 
   `, (err, stdout) => {
     if (err) process.stderr.write(colors.white(err));

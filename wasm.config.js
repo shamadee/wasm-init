@@ -9,10 +9,12 @@ module.exports = {
   ],
   exported_functions: [
     '_myFunc',
-    '_myFunc2',
   ],
   flags: [
     '-s WASM=1',
+    '-s ASSERTIONS=1',
+    '-s ALLOW_MEMORY_GROWTH=1',
+    '-O3',
   ],
 };
 

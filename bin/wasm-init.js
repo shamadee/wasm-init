@@ -12,19 +12,24 @@ const argsArr = process.argv.slice(2);
 const args = {};
 
 argsArr.forEach(el => {
-  const key = el.slice(0, el.indexOf('='));
+  const key = el.slice(0, el.indexOf('=') + 1) || el.slice(el.indexOf('=') + 1);
   const value = el.slice(el.indexOf('=') + 1);
   args[key] = value;
 });
 
-const printStr = args[0] || 'Hello WASM!';
-
-create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
-create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
-create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
-create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
-create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
-create.writeFile('app.js', './', templates.appJsTxt, 'app.js file', args);
+if (args['clean']) {
+  return exec(`rm -rf ./wasm ./cpp && rm app.js index.html server.js wasm.config.js`, (err, stdout) => {
+    if (err) process.stderr.write(colors.white(err));
+    process.stdout.write(stdout);
+  });
+} else {
+  create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
+  create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
+  create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
+  create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
+  create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
+  create.writeFile('app.js', './', templates.appJsTxt, 'app.js file', args);
+}
 
 const config = require('./../../../wasm.config.js');
 // const config = require('./../wasm.config.js');

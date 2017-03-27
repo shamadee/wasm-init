@@ -7,18 +7,27 @@ const create = require('./../lib/createFiles');
 const templates = require('./../lib/templateFileContent');
 
 process.stdout.write('Creating WASM template...\n');
-const args = process.argv.slice(2);
+
+const argsArr = process.argv.slice(2);
+const args = {};
+
+argsArr.forEach(el => {
+  const key = el.slice(0, el.indexOf('='));
+  const value = el.slice(el.indexOf('=') + 1);
+  args[key] = value;
+});
 
 const printStr = args[0] || 'Hello WASM!';
 
-create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file');
-create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file');
-create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file');
-create.writeFile('server.js', './', templates.serverTxt, 'server file');
-create.writeFile('index.html', './', templates.htmlTxt, 'html file');
-create.writeFile('app.js', './', templates.appJsTxt, 'app.js file');
+create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
+create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
+create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
+create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
+create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
+create.writeFile('app.js', './', templates.appJsTxt, 'app.js file', args);
 
 const config = require('./../../../wasm.config.js');
+// const config = require('./../wasm.config.js');
 
 function compileWASM () {
   // format exported functions from config for shell script

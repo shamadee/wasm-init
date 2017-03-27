@@ -26,7 +26,7 @@ argsArr.forEach(el => {
 });
 
 if (args['clean']) {
-  return exec(`rm -rf ./wasm ./cpp && rm app.js index.html server.js wasm.config.js`, (err, stdout) => {
+  return exec(`rm -rf ./wasm ./cpp && rm index.js index.html server.js wasm.config.js`, (err, stdout) => {
     if (err) process.stderr.write(colors.white(err));
     process.stdout.write(stdout);
   });
@@ -36,7 +36,7 @@ if (args['clean']) {
   create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
   create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
   create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
-  create.writeFile('app.js', './', templates.appJsTxt, 'app.js file', args);
+  create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
 }
 
 const config = require('./../../../wasm.config.js');

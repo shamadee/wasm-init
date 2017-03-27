@@ -1,8 +1,10 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const exec = require('child_process').exec;
 const colors = require('colors');
-const create = require('./lib/createFiles');
-const templates = require('./lib/templateFileContent');
+const create = require('./../lib/createFiles');
+const templates = require('./../lib/templateFileContent');
 
 process.stdout.write('Creating WASM template...\n');
 const args = process.argv.slice(2);
@@ -16,7 +18,7 @@ create.writeFile('server.js', './', templates.serverTxt, 'server file');
 create.writeFile('index.html', './', templates.htmlTxt, 'html file');
 create.writeFile('app.js', './', templates.appJsTxt, 'app.js file');
 
-const config = require('./wasm.config.js');
+const config = require('./../../../wasm.config.js');
 
 function compileWASM () {
   // format exported functions from config for shell script

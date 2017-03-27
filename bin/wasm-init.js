@@ -6,7 +6,7 @@ const colors = require('colors');
 const create = require('./../lib/createFiles');
 const templates = require('./../lib/templateFileContent');
 
-process.stdout.write('Creating WASM template...\n');
+process.stdout.write(colors.cyan('Creating WASM template...\n'));
 
 const argsArr = process.argv.slice(2);
 const args = {};
@@ -30,6 +30,8 @@ const config = require('./../../../wasm.config.js');
 // const config = require('./../wasm.config.js');
 
 function compileWASM () {
+  // check that emscripten path is correct
+  if (!fs.existsSync(config.emscripten_path)) return process.stdout.write(colors.red(`Error: Could not find emscripten directory at ${config.emscripten_path}\n`));
   // format exported functions from config for shell script
   let expFuncs = config.exported_functions.reduce((acc, val) => acc.concat('\'', val, '\'\,'), '[');
   expFuncs = expFuncs.substring(0, expFuncs.length - 1).concat(']');

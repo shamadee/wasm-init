@@ -11,9 +11,17 @@ process.stdout.write(colors.cyan('Creating WASM template...\n'));
 const argsArr = process.argv.slice(2);
 const args = {};
 
+// populate args object with key-value pairs
 argsArr.forEach(el => {
-  const key = el.slice(0, el.indexOf('=') + 1) || el.slice(el.indexOf('=') + 1);
-  const value = el.slice(el.indexOf('=') + 1);
+  let key;
+  let value;
+  if (el.indexOf('=') >= 0) {
+    key = el.slice(0, el.indexOf('='));
+    value = el.slice(el.indexOf('=') + 1);
+  } else {
+    key = el;
+    value = true;
+  }
   args[key] = value;
 });
 

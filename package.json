@@ -23,5 +23,8 @@
   "scripts": {
     "start": "node index.js && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "wasm-init": "./bin/wasm-init"
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "wasm-init",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "shamadee",
   "license": "MIT",
   "keywords": [
@@ -25,6 +25,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "wasm-init": "./bin/wasm-init"
+    "wasm-init": "./bin/wasm-init.js"
   }
 }

@@ -7,7 +7,7 @@
 wasm-init abstracts the WebAssembly setup and compile process and aims to dramatically simplify the development workflow.
 
 
-This package requires that you have [**Emscripten**](https://github.com/juj/emsdk.git) installed on your machine. You can get like so:
+This package requires that you have [**Emscripten**](https://github.com/juj/emsdk.git) installed on your machine. You can get it like so:
 ```
 git clone https://github.com/juj/emsdk.git
 cd emsdk
@@ -64,7 +64,10 @@ loadWASM().then(wasmModule => {
 
 
 If you are on board with wasm-init's automation, the quickest road to success would be:
-`npm run wasm-init emcc_path=./../emsdk` (modify path accordingly). This will set Emscripten's file path in the wasm.config.js file automatically. This will also install and compile all necessary files, including a server.js, index.js and index.html file, that are already setup to include WASM in the browser. (Executing `npm run wasm-init` *will overwrite any files that may already be there!*)
+`npm run wasm-init emcc_path=./../emsdk` (modify path accordingly). This will set Emscripten's file path in the wasm.config.js file automatically. This will also install and compile all necessary files, including a server.js, index.js and index.html file, that are already setup to include WASM in the browser. (Executing `npm run wasm-init` **will overwrite any files that may already be there!**).
+
+If you now run your browser (either manually or with gulp), and go to localhost:3000, open up the console, and you should see the message from the C++ file printed.
+ 
 
 If you want less clutter, the following flags for `npm run wasm-init` might be of interest: 
 
@@ -79,7 +82,11 @@ If you want less clutter, the following flags for `npm run wasm-init` might be o
 `no-server`   - no server.js file
 
 
-If you want built-in **hot reloading** functionality, via **gulp** and **browser-sync**, just add the flag `hot`. Note, that this will install the gulp and browser-sync packages automatically. This will also generate a gulpfile.js file, which is already setup to work with the template code.
+If you want built-in **hot reloading** functionality, via **gulp** and **browser-sync**, just add the flag 
+
+`hot` .
+
+Note, that this will install the gulp and browser-sync packages automatically. This will also generate a gulpfile.js file, which is already setup to work with the template code.
 
 
 Lastly,

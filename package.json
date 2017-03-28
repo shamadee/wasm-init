@@ -26,6 +26,7 @@
   },
   "bin": {
     "wasm-init": "./bin/wasm-init.js",
-    "wasm-compile": "./bin/wasm-compile.js"
+    "wasm-compile": "./bin/wasm-compile.js",
+    "wasm-recompile": "./bin/wasm-recompile.js"
   }
 }

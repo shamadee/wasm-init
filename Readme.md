@@ -2,10 +2,9 @@
 
 ## Work environment and template code for WebAssembly projects
 
-### **Install**
-
 wasm-init abstracts the WebAssembly setup and compile process and aims to dramatically simplify the development workflow.
 
+### **Install**
 
 This package requires that you have [**Emscripten**](https://github.com/juj/emsdk.git) installed on your machine. You can get it like so:
 ```

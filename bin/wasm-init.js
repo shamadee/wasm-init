@@ -7,13 +7,9 @@ const create = require('./../lib/createFiles');
 const templates = require('./../lib/templateFileContent');
 const cc = require('./../lib/compileWASM');
 
-process.stdout.write(colors.cyan('Creating WASM template...\n'));
-
-
+// populate args object with key-value pairs
 const argsArr = process.argv.slice(2);
 const args = {};
-
-// populate args object with key-value pairs
 argsArr.forEach(el => {
   let key;
   let value;
@@ -28,11 +24,13 @@ argsArr.forEach(el => {
 });
 
 if (args['clean']) {
+  process.stdout.write(colors.yellow('Deleting WASM template...\n'));
   return exec(`rm -rf ./wasm ./cpp && rm index.js index.html server.js wasm.config.js`, (err, stdout) => {
     if (err) process.stderr.write(colors.white(err));
     process.stdout.write(stdout);
   });
 } else {
+  process.stdout.write(colors.cyan('Creating WASM template...\n'));
   create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
   create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
   create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
@@ -41,7 +39,6 @@ if (args['clean']) {
   create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
 }
 
-const config = require('./../../../wasm.config.js');
-// const config = require('./../wasm.config.js');
+const config = require(path.join(process.cwd(), './wasm.config.js'));
 
 cc.compileWASM(config);

@@ -30,14 +30,18 @@ if (args['clean']) {
     if (err) process.stderr.write(colors.white(err));
     process.stdout.write(stdout);
   });
-} else {
-  process.stdout.write(colors.cyan('Creating WASM template...\n'));
-  create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
-  create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
-  create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
-  create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
-  create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
-  create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
+}
+
+process.stdout.write(colors.cyan('Creating WASM template...\n'));
+create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
+create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
+create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
+create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
+create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
+create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
+if (args['hot']) {
+  process.stdout.write(colors.magenta('Setting up hot reloading with gulp...\n'));
+  create.writeFile('gulpfile.js', './', templates.gulpTxt, 'gulp file', args);
 }
 
 const config = require(path.join(process.cwd(), './wasm.config.js'));

@@ -1,7 +1,7 @@
 {
   "name": "wasm-init",
   "description": "",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "author": "shamadee",
   "contributors": [
     { "name": "Matthias Wagner" },

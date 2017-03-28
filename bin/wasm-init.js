@@ -13,7 +13,6 @@ let config = null;
 if (fs.existsSync(path.join(process.cwd(), './wasm.config.js'))) {
   config = require(path.join(process.cwd(), './wasm.config.js'));
 }
-
 // populate args object with key-value pairs
 const argsArr = process.argv.slice(2);
 const args = {};
@@ -77,10 +76,13 @@ if (args['minimal']) {
 }
 process.stdout.write(colors.cyan('Creating WASM template...\n'));
 
-// create config file first, to generate compile and load parameters (input & output files)
-// don't overwrite config file, if rebuild flag was submitted
-// (rebuild the project from the parameters in the existing config file)
-if (!args['rebuild']) create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
+// create config file first, to generate compile and load parameters (input & output files, flags)
+// don't overwrite config file, if build flag was submitted
+// (build the project from the parameters in the existing config file)
+if (!args['build']) create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
+if (!fs.existsSync(path.join(process.cwd(), './wasm.config.js'))) {
+  process.stdout.write(colors.red('Could not find wasm.config.js file'));
+}
 config = require(path.join(process.cwd(), './wasm.config.js'));
 
 // add config parameters to arguments, to be passed to other file templates

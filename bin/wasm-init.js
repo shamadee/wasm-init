@@ -48,8 +48,8 @@ create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
 create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
 create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
 if (args['hot']) {
-  process.stdout.write(colors.magenta('Setting up hot reloading with gulp...\n'));
-  exec(`npm i --save gulp`, (err, stdout) => {
+  process.stdout.write(colors.magenta('Setting up hot reloading with gulp and borwser-sync...\n'));
+  exec(`npm i --save gulp browser-sync`, (err, stdout) => {
     if (err) process.stderr.write(colors.white(err));
     process.stdout.write(stdout);
   });

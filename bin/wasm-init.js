@@ -28,7 +28,7 @@ argsArr.forEach(el => {
 if (args['clean']) {
   
   const folders = ['./wasm', './cpp'];
-  const files = ['wasm.config.js', 'server.js', 'index.html', 'index.js', 'gulpfile.js'];
+  const files = ['wasm.config.js', 'server.js', 'index.html', 'index.js', 'gulpfile.js', ];
   
   // delete wasm and cpp folders
   process.stdout.write(colors.yellow('Deleting WASM template...\n'));
@@ -53,15 +53,39 @@ if (args['clean']) {
 }
 
 // create files
-// set flags to only create wrapper and config, if 'minimal'
-if (args['minimal']) { args['no-cpp'] = true; args['no-server'] = true; args['no-html'] = true; args['no-indexjs'] = true; }
+
+// set flags to only create config file, if 'minimal'
+if (args['minimal']) {
+  args['no-cpp'] = true;
+  args['no-wrapper'] = true;
+  args['no-server'] = true;
+  args['no-html'] = true;
+  args['no-indexjs'] = true;
+}
 process.stdout.write(colors.cyan('Creating WASM template...\n'));
-create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
-create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
-if (!args['no-cpp']) create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
+
+// create config file first, to generate compile and load parameters (input & output files)
+// don't overwrite config file, if rebuild flag was submitted
+// (rebuild the project from the parameters in the existing config file)
+if (!args['rebuild']) create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
+const config = require(path.join(process.cwd(), './wasm.config.js'));
+
+// add config parameters to arguments, to be passed to other file templates
+args['config'] = config;
+
+// extract file and directory names from config file
+const cppFile = args.config.inputfiles[0].slice(args.config.inputfiles[0].lastIndexOf('/') + 1);
+const cppDir = args.config.inputfiles[0].slice(0, args.config.inputfiles[0].lastIndexOf('/'));
+const outFile = args.config.outputfile.slice(args.config.outputfile.lastIndexOf('/') + 1);
+const outDir = args.config.outputfile.slice(0, args.config.outputfile.lastIndexOf('/'));
+
+
+if (!args['no-wrapper']) create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
+if (!args['no-cpp']) create.writeFile(cppFile, cppDir, templates.cppTxt, 'C++ file', args);
 if (!args['no-server']) create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
 if (!args['no-html']) create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
 if (!args['no-indexjs'])create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
+
 // install gulp and browser-sync, if required
 if (args['hot']) {
   process.stdout.write(colors.magenta('Setting up hot reloading with gulp and borwser-sync...\n'));
@@ -71,8 +95,6 @@ if (args['hot']) {
   });
   create.writeFile('gulpfile.js', './', templates.gulpTxt, 'gulp file', args);
 }
-
-const config = require(path.join(process.cwd(), './wasm.config.js'));
 
 // only compile wasm, if there is a valid input file
 if (fs.existsSync(config.inputfiles[0])) {

@@ -3,6 +3,11 @@
   "description": "",
   "version": "0.0.21",
   "author": "shamadee",
+  "contributors": [
+    { "name": "Matthias Wagner" },
+    { "name": "Deep Pulusani" },
+    { "name": "Shahrod Khalkhali" }
+  ],
   "license": "MIT",
   "keywords": [
     "webassembly",

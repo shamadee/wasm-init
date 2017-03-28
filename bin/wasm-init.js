@@ -25,8 +25,16 @@ argsArr.forEach(el => {
 });
 
 if (args['clean']) {
+  if (fs.existsSync('gulpfile.js')) {
+    exec(`rm gulpfile.js`, (err, stdout) => {
+      if (err) process.stderr.write(colors.white(err));
+      process.stdout.write(stdout);
+    });
+  }
   process.stdout.write(colors.yellow('Deleting WASM template...\n'));
-  return exec(`rm -rf ./wasm ./cpp && rm index.js index.html server.js wasm.config.js`, (err, stdout) => {
+  return exec(`
+  rm -rf ./wasm ./cpp && rm index.js index.html server.js wasm.config.js
+  `, (err, stdout) => {
     if (err) process.stderr.write(colors.white(err));
     process.stdout.write(stdout);
   });
@@ -41,6 +49,10 @@ create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
 create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
 if (args['hot']) {
   process.stdout.write(colors.magenta('Setting up hot reloading with gulp...\n'));
+  exec(`npm i --save gulp`, (err, stdout) => {
+    if (err) process.stderr.write(colors.white(err));
+    process.stdout.write(stdout);
+  });
   create.writeFile('gulpfile.js', './', templates.gulpTxt, 'gulp file', args);
 }
 

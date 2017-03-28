@@ -24,29 +24,45 @@ argsArr.forEach(el => {
   args[key] = value;
 });
 
+// remove all files with 'clean' flag
 if (args['clean']) {
-  if (fs.existsSync('gulpfile.js')) {
-    exec(`rm gulpfile.js`, (err, stdout) => {
-      if (err) process.stderr.write(colors.white(err));
-      process.stdout.write(stdout);
-    });
-  }
+  
+  const folders = ['./wasm', './cpp'];
+  const files = ['wasm.config.js', 'server.js', 'index.html', 'index.js', 'gulpfile.js'];
+  
+  // delete wasm and cpp folders
   process.stdout.write(colors.yellow('Deleting WASM template...\n'));
-  return exec(`
-  rm -rf ./wasm ./cpp && rm index.js index.html server.js wasm.config.js
-  `, (err, stdout) => {
-    if (err) process.stderr.write(colors.white(err));
-    process.stdout.write(stdout);
+  folders.forEach(el => {
+    if (fs.existsSync(el)) {
+      exec(`rm -rf ${el}`, (err, stdout) => {
+        if (err) process.stderr.write(colors.white(err));
+        process.stdout.write(stdout);
+      });
+    }
   });
+  // delete other files
+  files.forEach(el => {
+    if (fs.existsSync(el)) {
+      exec(`rm -rf ${el}`, (err, stdout) => {
+        if (err) process.stderr.write(colors.white(err));
+        process.stdout.write(stdout);
+      });
+    }
+  });
+  return;
 }
 
+// create files
+// set flags to only create wrapper and config, if 'minimal'
+if (args['minimal']) { args['no-cpp'] = true; args['no-server'] = true; args['no-html'] = true; args['no-indexjs'] = true; }
 process.stdout.write(colors.cyan('Creating WASM template...\n'));
 create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
 create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
-create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
-create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
-create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
-create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
+if (!args['no-cpp']) create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
+if (!args['no-server']) create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
+if (!args['no-html']) create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
+if (!args['no-indexjs'])create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
+// install gulp and browser-sync, if required
 if (args['hot']) {
   process.stdout.write(colors.magenta('Setting up hot reloading with gulp and borwser-sync...\n'));
   exec(`npm i --save gulp browser-sync`, (err, stdout) => {
@@ -58,4 +74,7 @@ if (args['hot']) {
 
 const config = require(path.join(process.cwd(), './wasm.config.js'));
 
-cc.compileWASM(config);
+// only compile wasm, if there is a valid input file
+if (fs.existsSync(config.inputfiles[0])) {
+  cc.compileWASM(config);
+}

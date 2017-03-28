@@ -8,6 +8,12 @@ const create = require('./../lib/createFiles');
 const templates = require('./../lib/templateFileContent');
 const cc = require('./../lib/compileWASM');
 
+// check if we the wasm.config.js file already exists, and require it in
+let config = null;
+if (fs.existsSync(path.join(process.cwd(), './wasm.config.js'))) {
+  config = require(path.join(process.cwd(), './wasm.config.js'));
+}
+
 // populate args object with key-value pairs
 const argsArr = process.argv.slice(2);
 const args = {};
@@ -25,10 +31,17 @@ argsArr.forEach(el => {
 });
 
 // remove all files with 'clean' flag
-if (args['clean']) {
-  
-  const folders = ['./wasm', './cpp'];
-  const files = ['wasm.config.js', 'server.js', 'index.html', 'index.js', 'gulpfile.js', ];
+if (args['clean'] || args['clean-all']) {
+  let cppFolder = './cpp';
+  let wasmFolder = './wasm';
+  if (config) {
+    cppFolder = config.inputfiles[0].slice(0, config.inputfiles[0].lastIndexOf('/'));
+    wasmFolder = config.outputfile.slice(0, config.outputfile.lastIndexOf('/'));
+  }
+  const folders = [wasmFolder, cppFolder];
+  const files = ['server.js', 'index.html', 'index.js', 'gulpfile.js', ];
+  // add config file to delete, if flag is clean-all
+  if (args['clean-all']) files.push('wasm.config.js');
   
   // delete wasm and cpp folders
   process.stdout.write(colors.yellow('Deleting WASM template...\n'));
@@ -68,7 +81,7 @@ process.stdout.write(colors.cyan('Creating WASM template...\n'));
 // don't overwrite config file, if rebuild flag was submitted
 // (rebuild the project from the parameters in the existing config file)
 if (!args['rebuild']) create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
-const config = require(path.join(process.cwd(), './wasm.config.js'));
+config = require(path.join(process.cwd(), './wasm.config.js'));
 
 // add config parameters to arguments, to be passed to other file templates
 args['config'] = config;
@@ -79,8 +92,7 @@ const cppDir = args.config.inputfiles[0].slice(0, args.config.inputfiles[0].last
 const outFile = args.config.outputfile.slice(args.config.outputfile.lastIndexOf('/') + 1);
 const outDir = args.config.outputfile.slice(0, args.config.outputfile.lastIndexOf('/'));
 
-
-if (!args['no-wrapper']) create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
+if (!args['no-wrapper']) create.writeFile('loadWASM.js', outDir, templates.wrapperTxt, 'wasm wrapper file', args);
 if (!args['no-cpp']) create.writeFile(cppFile, cppDir, templates.cppTxt, 'C++ file', args);
 if (!args['no-server']) create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
 if (!args['no-html']) create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);

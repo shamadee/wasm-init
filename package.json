@@ -1,8 +1,13 @@
 {
   "name": "wasm-init",
   "description": "",
-  "version": "0.0.7",
+  "version": "0.0.22",
   "author": "shamadee",
+  "contributors": [
+    { "name": "Matthias Wagner" },
+    { "name": "Deep Pulusani" },
+    { "name": "Shahrod Khalkhali" }
+  ],
   "license": "MIT",
   "keywords": [
     "webassembly",
@@ -25,6 +30,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "wasm-init": "./bin/wasm-init.js"
+    "wasm-init": "./bin/wasm-init.js",
+    "wasm-compile": "./bin/wasm-compile.js"
   }
 }

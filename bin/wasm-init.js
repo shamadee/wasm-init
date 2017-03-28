@@ -2,91 +2,79 @@
 
 const fs = require('fs');
 const exec = require('child_process').exec;
+const path = require('path');
 const colors = require('colors');
 const create = require('./../lib/createFiles');
 const templates = require('./../lib/templateFileContent');
+const cc = require('./../lib/compileWASM');
 
-process.stdout.write(colors.cyan('Creating WASM template...\n'));
-
+// populate args object with key-value pairs
 const argsArr = process.argv.slice(2);
 const args = {};
-
 argsArr.forEach(el => {
-  const key = el.slice(0, el.indexOf('='));
-  const value = el.slice(el.indexOf('=') + 1);
+  let key;
+  let value;
+  if (el.indexOf('=') >= 0) {
+    key = el.slice(0, el.indexOf('='));
+    value = el.slice(el.indexOf('=') + 1);
+  } else {
+    key = el;
+    value = true;
+  }
   args[key] = value;
 });
 
-const printStr = args[0] || 'Hello WASM!';
+// remove all files with 'clean' flag
+if (args['clean']) {
+  
+  const folders = ['./wasm', './cpp'];
+  const files = ['wasm.config.js', 'server.js', 'index.html', 'index.js', 'gulpfile.js'];
+  
+  // delete wasm and cpp folders
+  process.stdout.write(colors.yellow('Deleting WASM template...\n'));
+  folders.forEach(el => {
+    if (fs.existsSync(el)) {
+      exec(`rm -rf ${el}`, (err, stdout) => {
+        if (err) process.stderr.write(colors.white(err));
+        process.stdout.write(stdout);
+      });
+    }
+  });
+  // delete other files
+  files.forEach(el => {
+    if (fs.existsSync(el)) {
+      exec(`rm -rf ${el}`, (err, stdout) => {
+        if (err) process.stderr.write(colors.white(err));
+        process.stdout.write(stdout);
+      });
+    }
+  });
+  return;
+}
 
+// create files
+// set flags to only create wrapper and config, if 'minimal'
+if (args['minimal']) { args['no-cpp'] = true; args['no-server'] = true; args['no-html'] = true; args['no-indexjs'] = true; }
+process.stdout.write(colors.cyan('Creating WASM template...\n'));
 create.writeFile('loadWASM.js', './wasm', templates.wrapperTxt, 'wasm wrapper file', args);
 create.writeFile('wasm.config.js', './', templates.configTxt, 'wasm configuration file', args);
-create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
-create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
-create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
-create.writeFile('app.js', './', templates.appJsTxt, 'app.js file', args);
-
-const config = require('./../../../wasm.config.js');
-// const config = require('./../wasm.config.js');
-
-function compileWASM () {
-  // check that emscripten path is correct
-  if (!fs.existsSync(config.emscripten_path)) return process.stdout.write(colors.red(`Error: Could not find emscripten directory at ${config.emscripten_path}\n`));
-  // format exported functions from config for shell script
-  let expFuncs = config.exported_functions.reduce((acc, val) => acc.concat('\'', val, '\'\,'), '[');
-  expFuncs = expFuncs.substring(0, expFuncs.length - 1).concat(']');
-
-  // format flags from config for shell script
-  const flags = config.flags.reduce((acc, val) => acc.concat(' ', val), '');
-
-  // execute shell script
-  exec(`
-  if [[ :$PATH: != *:"/emsdk":* ]]
-  then
-    # use path to emsdk folder, relative to project directory
-    BASEDIR="${config.emscripten_path}"
-    EMSDK_ENV=$(find "$BASEDIR" -type f -name "emsdk_env.sh")
-    source "$EMSDK_ENV"
-  fi
-
-  # add exported C/C++ functions here
-  CPP_FUNCS="[
-  '_myFunc',
-  ]"
-
-  echo "Compiling C++ to WASM ..."
-  echo " "
-  emcc -o ${config.outputfiles} ${config.inputfiles} \
-  -s EXPORTED_FUNCTIONS="${expFuncs}" \
-  ${flags}
-
-  `, (err, stdout) => {
+if (!args['no-cpp']) create.writeFile('lib.cpp', './cpp', templates.cppTxt, 'C++ file', args);
+if (!args['no-server']) create.writeFile('server.js', './', templates.serverTxt, 'server file', args);
+if (!args['no-html']) create.writeFile('index.html', './', templates.htmlTxt, 'html file', args);
+if (!args['no-indexjs'])create.writeFile('index.js', './', templates.indexJsTxt, 'index.js file', args);
+// install gulp and browser-sync, if required
+if (args['hot']) {
+  process.stdout.write(colors.magenta('Setting up hot reloading with gulp and borwser-sync...\n'));
+  exec(`npm i --save gulp browser-sync`, (err, stdout) => {
     if (err) process.stderr.write(colors.white(err));
     process.stdout.write(stdout);
-    insertEventListener();
   });
+  create.writeFile('gulpfile.js', './', templates.gulpTxt, 'gulp file', args);
 }
 
-// insert event dispatcher into lib.js,
-// to notify us when the script is done loading
-function insertEventListener () {
-  fs.readFile('./wasm/lib.js', 'utf-8', (err1, data) => {
-    if (err1) process.stderr.write(colors.white(err1));
-    
-    data = data.replace(/else\{doRun\(\)\}/g, 'else{doRun()}script.dispatchEvent(doneEvent);');
-    
-    fs.writeFile('./wasm/lib.temp.js', data, (err2) => {
-      if (err2) process.stderr.write(colors.white(err2));
-      fs.renameSync('./wasm/lib.temp.js', './wasm/lib.js');
-    });
-  });
+const config = require(path.join(process.cwd(), './wasm.config.js'));
+
+// only compile wasm, if there is a valid input file
+if (fs.existsSync(config.inputfiles[0])) {
+  cc.compileWASM(config);
 }
-
-compileWASM();
-
-clean = function() {
-  exec(`rm ./wasm/*.* `, (err, stdout) => {
-    if (err) process.stderr.write(err);
-    process.stdout.write(stdout);
-  });
-};

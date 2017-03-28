@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const exec = require('child_process').exec;
+const path = require('path');
 const colors = require('colors');
 const create = require('./../lib/createFiles');
 const templates = require('./../lib/templateFileContent');

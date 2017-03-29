@@ -1,10 +1,9 @@
 # **wasm-init**
 
-## Work environment and template code for WebAssembly projects
+## Work environment and code generator for WebAssembly projects
 
 wasm-init abstracts the WebAssembly setup and compile process and aims to dramatically simplify the development workflow.
-<br>
-<br>
+<br><br>
 ### **Install**
 
 This package requires that you have [**Emscripten**](https://github.com/juj/emsdk.git) installed on your machine. You can get it like so:
@@ -16,10 +15,9 @@ cd emsdk
 ```
 (Note, that the install will take a while. More information is [here](http://webassembly.org/getting-started/developers-guide/).)
 
-<br>
+
 The best way to install this module is via `npm install wasm-init`.
-<br>
-<br>
+<br><br>
 
 ### **Use**
 
@@ -38,10 +36,8 @@ module.exports = {
 };
 ```
 `emscripten_path` is the relative path to the *emsdk* directory, from your project folder. (In the above case, we would expect Emscripten to be located in the same parent-directory as the project.)
-
-<br>
-If you want to automate this process you can set up a few scripts in your project's *package.json* file:
-<br>
+<br><br>
+If you want to automate this process you can set up a few scripts in your project's *package.json* file: 
 ```json
 ...
   "scripts": {
@@ -52,11 +48,10 @@ If you want to automate this process you can set up a few scripts in your projec
 ...
 ```
 <br>
-<br>
+
 ### **Templates**
 These scripts make the module's functionality accessible. Be aware that `npm run wasm-init` **will create several files and folders inside your project directory.** This is your fastest route to a working project setup, however, you can also set up all the files manually, if you so desire.
-
-<br>
+<br><br>
 ### **Custom**
 The best way to a custom setup is to start with just the wasm.config.js file (you can generate it with `npm run wasm-init minimal`), and enter the emcc_path, inputfiles, outputfile, and flags according to your needs. When you run `npm run wasm-init build`, it will generate those files for you.
 
@@ -68,8 +63,7 @@ loadWASM().then(wasmModule => {
   m._myFunc(); // this is the call to the C++ function myFunc();
 });
 ```
-<br>
-<br>
+
 When you want to export individual functions from C++ to WASM, you can do this with the *exported_functions* property in wasm.config.js:
 ```javascript
 ...
@@ -79,18 +73,16 @@ When you want to export individual functions from C++ to WASM, you can do this w
 ...
 ```
 It is required to **prepend the C++ function names with an underscore!**, 
-
-<br>
-<br>
+<br><br><br>
 If you are on board with wasm-init's automation, the quickest road to success would be:
-`npm run wasm-init emcc_path=./../emsdk` (modify path accordingly). This will set Emscripten's file path in the wasm.config.js file automatically. This will also install and compile all necessary files, including a server.js, index.js and index.html file, that are already setup to include WASM in the browser. (**Executing `npm run wasm-init` will overwrite any files that may already be there, as does `npm run wasm-init build`!** ).
+`npm run wasm-init emcc_path=./../emsdk` (modify path accordingly). This will set Emscripten's file path in the wasm.config.js file automatically. This will also install and compile all necessary files, including a server.js, index.js and index.html file, that are already setup to include WASM in the browser. <br>
+(**Executing `npm run wasm-init` will overwrite any files that may already be there, as does `npm run wasm-init build`!** ).
 
 If you now run your browser (either manually or with gulp), and go to localhost:3000, open up the console, and you should see the message from the C++ file printed.
- 
-<br>
-<br>
+<br><br>
 ### **Flags**
-If you want less clutter, the following flags for `npm run wasm-init` might be of interest: 
+The following flags for `npm run wasm-init` are usable:
+<br><br> 
 
 `build`       - builds files according to instructions in wasm.config.js
 
@@ -106,14 +98,14 @@ If you want less clutter, the following flags for `npm run wasm-init` might be o
 
 `no-server`   - no server.js file
 
-
+<br>
 If you want built-in **hot reloading** functionality, via **gulp** and **browser-sync**, just add the flag 
 
 `hot` .
 
 Note, that this will install the gulp and browser-sync packages automatically. This will also generate a gulpfile.js file, which is already setup to work with the template code.
 
-
+<br>
 Lastly,
 
 `npm run wasm-init clean`

@@ -1,11 +1,10 @@
 # **wasm-init**
 
-## Work environment and template code for WebAssembly projects
-
-### **Install**
+## Work environment and code generator for WebAssembly projects
 
 wasm-init abstracts the WebAssembly setup and compile process and aims to dramatically simplify the development workflow.
-
+<br><br>
+### **Install**
 
 This package requires that you have [**Emscripten**](https://github.com/juj/emsdk.git) installed on your machine. You can get it like so:
 ```
@@ -18,12 +17,12 @@ cd emsdk
 
 
 The best way to install this module is via `npm install wasm-init`.
-
+<br><br>
 
 ### **Use**
 
 At the heart of wasm-init is the *wasm.config.js* file, which takes Emscripten's compile process and breaks it down into configurable elements. To compile C++ to WASM with Emscripten, you need at bare minimum the following properties:
-```
+```javascript
 // wasm.config.js
 module.exports = {
   emscripten_path: './../emsdk',
@@ -37,26 +36,27 @@ module.exports = {
 };
 ```
 `emscripten_path` is the relative path to the *emsdk* directory, from your project folder. (In the above case, we would expect Emscripten to be located in the same parent-directory as the project.)
-
-
+<br><br>
 If you want to automate this process you can set up a few scripts in your project's *package.json* file: 
-```
+```json
 ...
   "scripts": {
     "wasm-init": "wasm-init",
-    "compile": "wasm-compile"
-    "start": "gulp",   // optional, for hot-reloading
+    "compile": "wasm-compile",
+    "start": "gulp"   // optional, for hot-reloading
   }
 ...
-  ```
+```
+<br>
+
 ### **Templates**
 These scripts make the module's functionality accessible. Be aware that `npm run wasm-init` **will create several files and folders inside your project directory.** This is your fastest route to a working project setup, however, you can also set up all the files manually, if you so desire.
-
+<br><br>
 ### **Custom**
 The best way to a custom setup is to start with just the wasm.config.js file (you can generate it with `npm run wasm-init minimal`), and enter the emcc_path, inputfiles, outputfile, and flags according to your needs. When you run `npm run wasm-init build`, it will generate those files for you.
 
 To compile, simply use `npm run compile`, which will take your C++ code and output a JavaScript file with Emscripten bindings, as well as the sought after .wasm file. To take advantage of wasm-init's easy loading mechanism for WebAssembly modules, you will need the wrapper file loadWASM.js. The wasm module is from there returned by a promise. Making the module accessible to your application is as easy as the following:
-```
+```javascript
 let m = {}
 loadWASM().then(wasmModule => {
   m = wasmModule;
@@ -65,7 +65,7 @@ loadWASM().then(wasmModule => {
 ```
 
 When you want to export individual functions from C++ to WASM, you can do this with the *exported_functions* property in wasm.config.js:
-```
+```javascript
 ...
   exported_functions: [
     '_myFunc',
@@ -73,14 +73,16 @@ When you want to export individual functions from C++ to WASM, you can do this w
 ...
 ```
 It is required to **prepend the C++ function names with an underscore!**, 
-
+<br><br><br>
 If you are on board with wasm-init's automation, the quickest road to success would be:
-`npm run wasm-init emcc_path=./../emsdk` (modify path accordingly). This will set Emscripten's file path in the wasm.config.js file automatically. This will also install and compile all necessary files, including a server.js, index.js and index.html file, that are already setup to include WASM in the browser. (**Executing `npm run wasm-init` will overwrite any files that may already be there, as does `npm run wasm-init build`!** ).
+`npm run wasm-init emcc_path=./../emsdk` (modify path accordingly). This will set Emscripten's file path in the wasm.config.js file automatically. This will also install and compile all necessary files, including a server.js, index.js and index.html file, that are already setup to include WASM in the browser. <br>
+(**Executing `npm run wasm-init` will overwrite any files that may already be there, as does `npm run wasm-init build`!** ).
 
 If you now run your browser (either manually or with gulp), and go to localhost:3000, open up the console, and you should see the message from the C++ file printed.
- 
-
-If you want less clutter, the following flags for `npm run wasm-init` might be of interest: 
+<br><br>
+### **Flags**
+The following flags for `npm run wasm-init` are usable:
+<br><br> 
 
 `build`       - builds files according to instructions in wasm.config.js
 
@@ -96,14 +98,14 @@ If you want less clutter, the following flags for `npm run wasm-init` might be o
 
 `no-server`   - no server.js file
 
-
-If you want built-in **hot reloading** functionality, via **gulp** and **browser-sync**, just add the flag 
+<br>
+If you want built-in hot-reloading functionality, via gulp and browser-sync, just add the flag 
 
 `hot` .
 
 Note, that this will install the gulp and browser-sync packages automatically. This will also generate a gulpfile.js file, which is already setup to work with the template code.
 
-
+<br>
 Lastly,
 
 `npm run wasm-init clean`
@@ -114,3 +116,5 @@ will **delete the autogenerated files**, except wasm.config.js .
 
 will **delete all autogenerated files**. Please use it carefully!
 
+<br>
+Collaborators: Deep Pulusani, Shahrod Khalkhali, Matthias Wagner

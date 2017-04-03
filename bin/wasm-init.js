@@ -102,11 +102,13 @@ if (!args['no-indexjs'])create.writeFile('index.js', './', templates.indexJsTxt,
 
 // install gulp and browser-sync, if required
 if (args['hot']) {
-  process.stdout.write(colors.magenta('Setting up hot reloading with gulp and browser-sync...\n'));
-  exec(`npm i --save gulp browser-sync`, (err, stdout) => {
-    if (err) process.stderr.write(colors.white(err));
-    process.stdout.write(stdout);
-  });
+  process.stdout.write(colors.magenta('Setting up hot reloading with gulp and borwser-sync...\n'));
+  if (!fs.existsSync(path.join(process.cwd(), 'node_modules/gulp'))) {
+    exec(`npm i --save gulp browser-sync`, (err, stdout) => {
+      if (err) process.stderr.write(colors.white(err));
+      process.stdout.write(stdout);
+    });
+  }
   create.writeFile('gulpfile.js', './', templates.gulpTxt, 'gulp file', args);
 }
 

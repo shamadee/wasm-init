@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const exec = require('child_process').exec;
+const execSync = require('child_process').execSync;
 const path = require('path');
 const colors = require('colors');
 const create = require('./../lib/createFiles');
@@ -34,7 +35,7 @@ if (args['clean'] || args['clean-all']) {
   let cppFolder = './cpp';
   let wasmFolder = './wasm';
   if (config) {
-    cppFolder = config.inputfiles[0].slice(0, config.inputfiles[0].lastIndexOf('/'));
+    cppFolder = config.inputfile.slice(0, config.inputfile.lastIndexOf('/'));
     wasmFolder = config.outputfile.slice(0, config.outputfile.lastIndexOf('/'));
   }
   const folders = [wasmFolder, cppFolder];
@@ -89,8 +90,8 @@ config = require(path.join(process.cwd(), './wasm.config.js'));
 args['config'] = config;
 
 // extract file and directory names from config file
-const cppFile = args.config.inputfiles[0].slice(args.config.inputfiles[0].lastIndexOf('/') + 1);
-const cppDir = args.config.inputfiles[0].slice(0, args.config.inputfiles[0].lastIndexOf('/'));
+const cppFile = args.config.inputfile.slice(args.config.inputfile.lastIndexOf('/') + 1);
+const cppDir = args.config.inputfile.slice(0, args.config.inputfile.lastIndexOf('/'));
 const outFile = args.config.outputfile.slice(args.config.outputfile.lastIndexOf('/') + 1);
 const outDir = args.config.outputfile.slice(0, args.config.outputfile.lastIndexOf('/'));
 
@@ -103,14 +104,17 @@ if (!args['no-indexjs'])create.writeFile('index.js', './', templates.indexJsTxt,
 // install gulp and browser-sync, if required
 if (args['hot']) {
   process.stdout.write(colors.magenta('Setting up hot reloading with gulp and browser-sync...\n'));
-  exec(`npm i --save gulp browser-sync`, (err, stdout) => {
-    if (err) process.stderr.write(colors.white(err));
-    process.stdout.write(stdout);
-  });
+  if (!fs.existsSync(path.join(process.cwd(), 'node_modules/gulp'))) {
+    process.stdout.write(colors.magenta('Installing gulp and browser-sync...\n'));
+    execSync(`npm install --save gulp browser-sync`, (err, stdout) => {
+      if (err) process.stderr.write(colors.white(err));
+      process.stdout.write(stdout);
+    });
+  }
   create.writeFile('gulpfile.js', './', templates.gulpTxt, 'gulp file', args);
 }
 
 // only compile wasm, if there is a valid input file
-if (fs.existsSync(config.inputfiles[0])) {
+if (fs.existsSync(config.inputfile)) {
   cc.compileWASM(config);
 }

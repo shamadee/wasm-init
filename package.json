@@ -1,7 +1,7 @@
 {
   "name": "wasm-init",
   "description": "",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "author": "shamadee",
   "contributors": [
     {
@@ -32,7 +32,6 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {

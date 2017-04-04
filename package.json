@@ -1,12 +1,18 @@
 {
   "name": "wasm-init",
   "description": "",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "author": "shamadee",
   "contributors": [
-    { "name": "Matthias Wagner" },
-    { "name": "Deep Pulusani" },
-    { "name": "Shahrod Khalkhali" }
+    {
+      "name": "Matthias Wagner"
+    },
+    {
+      "name": "Deep Pulusani"
+    },
+    {
+      "name": "Shahrod Khalkhali"
+    }
   ],
   "license": "MIT",
   "keywords": [
@@ -14,9 +20,9 @@
     "web",
     "wasm"
   ],
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/shamadee/wasm-init.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shamadee/wasm-init.git"
   },
   "dependencies": {
     "colors": "^1.1.2",

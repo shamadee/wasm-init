@@ -26,9 +26,7 @@ At the heart of wasm-init is the *wasm.config.js* file, which takes Emscripten's
 // wasm.config.js
 module.exports = {
   emscripten_path: './../emsdk',
-  inputfiles: [
-    'lib.cpp',
-  ],
+  inputfile: 'lib.cpp',
   outputfile: 'lib.js',
   flags: [
     '-s WASM=1',

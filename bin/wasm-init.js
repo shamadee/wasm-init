@@ -9,7 +9,7 @@ const create = require('./../lib/createFiles');
 const templates = require('./../lib/templateFileContent');
 const cc = require('./../lib/compileWASM');
 
-// check if we the wasm.config.js file already exists, and require it in
+// check if the wasm.config.js file already exists, and require it in
 let config = null;
 if (fs.existsSync(path.join(process.cwd(), './wasm.config.js'))) {
   config = require(path.join(process.cwd(), './wasm.config.js'));
@@ -30,7 +30,7 @@ argsArr.forEach(el => {
   args[key] = value;
 });
 
-// remove all files with 'clean' flag
+// remove files with 'clean' flag
 if (args['clean'] || args['clean-all']) {
   let cppFolder = './cpp';
   let wasmFolder = './wasm';
@@ -40,7 +40,7 @@ if (args['clean'] || args['clean-all']) {
   }
   const folders = [wasmFolder, cppFolder];
   const files = ['server.js', 'index.html', 'index.js', 'gulpfile.js', ];
-  // add config file to delete, if flag is clean-all
+  // delete wasm.config.js file, if flag is clean-all
   if (args['clean-all']) files.push('wasm.config.js');
   
   // delete wasm and cpp folders

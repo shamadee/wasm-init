@@ -7,4 +7,5 @@ app.js
 server.js
 wasm.config.js
 index.js
+gulpfile.js
 .DS_Store

@@ -47,10 +47,6 @@ if (args['clean'] || args['clean-all']) {
   process.stdout.write(colors.yellow('Deleting WASM template...\n'));
   folders.forEach(el => {
     if (fs.existsSync(el)) {
-      // exec(`rm -rf ${el}`, (err, stdout) => {
-      //   if (err) process.stderr.write(colors.white(err));
-      //   process.stdout.write(stdout);
-      // });
       let curPath;
       fs.readdirSync(el).forEach((file, i) => {
         curPath = `${el}/${file}`;
@@ -62,13 +58,10 @@ if (args['clean'] || args['clean-all']) {
   // delete other files
   files.forEach(el => {
     if (fs.existsSync(el)) {
-      // exec(`rm -rf ${el}`, (err, stdout) => {
-      //   if (err) process.stderr.write(colors.white(err));
-      //   process.stdout.write(stdout);
-      // });
       fs.unlinkSync(el);
     }
   });
+  
   return;
 }
 

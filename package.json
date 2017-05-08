@@ -33,7 +33,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "testinit": "node ./bin/wasm-init"
+    "testinit": "node ./bin/wasm-init",
+    "testcompile": "node ./bin/wasm-compile",
+    "testgulp": "gulp"
   },
   "bin": {
     "wasm-init": "./bin/wasm-init.js",

@@ -63,13 +63,13 @@ module.exports = {
 <br>
 
 ### **Templates**
-These scripts make the module's functionality accessible. Be aware that `npm run wasm-init` **will create several files and folders inside your project directory.** This is your fastest route to a working project setup, however, you can also set up all the files manually, if you so desire.
+These scripts make the module's functionality accessible. Be aware that `npm run wasm-init` **will create several files and folders inside your project directory.** This is your fastest route to a working project setup; however, you can set up all the files manually, if you so desire.
 <br>
 <br>
 ### **Custom**
-The best way to a custom setup is to start with just the wasm.config.js file (you can generate it with `npm run wasm-init minimal`), and enter the emcc_path, inputfiles, outputfile, and flags according to your needs. When you run `npm run wasm-init build`, it will generate those files for you.
+The best way to the custom setup is to start with the wasm.config.js file (you can generate it with npm run wasm-init minimal), and enter the emcc_path, inputfiles, outputfile, and flags according to your needs. When you run npm run wasm-init build, the program will generate these files for you.
 
-To compile, simply use `npm run compile`, which will take your C++ code and output a JavaScript file with Emscripten bindings, as well as the sought after .wasm file. To take advantage of wasm-init's easy loading mechanism for WebAssembly modules, you will need the wrapper file loadWASM.js. The wasm module is from there returned by a promise. Making the module accessible to your application is as easy as the following:
+To compile, simply use npm run compile to compile the C++ code, and the program will output a JavaScript file with Emscripten bindings, as well as the sought after.wasm file. To take advantage of wasm-init's easy loading mechanism for WebAssembly modules, you will need the wrapper file loadWASM.js. The wasm module is from there returned by a promise. Making the module accessible to your application is as easy as the following:
 ```javascript
 let m = {}
 loadWASM().then(wasmModule => {
